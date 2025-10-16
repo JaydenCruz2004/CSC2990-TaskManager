@@ -1,8 +1,8 @@
 package com.example.taskmanager;
 
-import android.content.Context;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,21 +13,7 @@ public class InputFragment extends Fragment {
 
     private EditText editTextTask, editTextWho;
     private Button buttonAdd;
-    private OnTaskAddedListener callback;
-
-    public interface OnTaskAddedListener {
-        void onTaskAdded(String task);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnTaskAddedListener) {
-            callback = (OnTaskAddedListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnTaskAddedListener");
-        }
-    }
+    private TaskViewModel taskViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,12 +24,15 @@ public class InputFragment extends Fragment {
         editTextWho = view.findViewById(R.id.editTextWho);
         buttonAdd = view.findViewById(R.id.buttonAdd);
 
+        // Get shared ViewModel (scoped to Activity)
+        taskViewModel = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
+
         buttonAdd.setOnClickListener(v -> {
             String task = editTextTask.getText().toString().trim();
             String who = editTextWho.getText().toString().trim();
 
             if (!task.isEmpty() && !who.isEmpty()) {
-                callback.onTaskAdded(task + " by " + who);
+                taskViewModel.addTask(task + " by " + who);
                 editTextTask.setText("");
                 editTextWho.setText("");
             }

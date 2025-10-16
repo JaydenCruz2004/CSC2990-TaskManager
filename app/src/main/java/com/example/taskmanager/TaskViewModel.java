@@ -1,34 +1,23 @@
+// TaskViewModel.java
 package com.example.taskmanager;
 
-import android.util.Log;
-
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TaskViewModel extends ViewModel {
-    private MutableLiveData<LinkedList<String>> taskLL;
+    private final MutableLiveData<List<String>> tasks = new MutableLiveData<>(new ArrayList<>());
 
-    public TaskViewModel(MutableLiveData<LinkedList<String>> taskLL){
-        this.taskLL = taskLL;
-        LinkedList<String> l = new LinkedList<>();
-        taskLL.setValue(l);
+    public LiveData<List<String>> getTasks() {
+        return tasks;
     }
 
-    public MutableLiveData<LinkedList<String>> getTask(){
-        return taskLL;
+    public void addTask(String task) {
+        List<String> current = new ArrayList<>(tasks.getValue());
+        current.add(task);
+        tasks.setValue(current);
     }
-    public void addTask(String task){
-        LinkedList<String> l = getTask().getValue();
-        l.add(task);
-        Log.i("TASKS", l.toString());
-        taskLL.setValue(l);
-    }
-    public void setTask(LinkedList<String> tasks){
-        taskLL.setValue(tasks);
-    }
-
-
-
 }
